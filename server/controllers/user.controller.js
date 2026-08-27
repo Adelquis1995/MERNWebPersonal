@@ -61,8 +61,48 @@ async function createUser(req, res) {
     }
 }
 
+async function updateUser(req, res) {
+    const { id } = req.params;
+    const userData = req.body;
+
+    if (userData.password) {
+        const salt = bcrypt.genSaltSync(10);
+        userData.password = bcrypt.hashSync(userData.password, salt);
+    } else {
+        delete userData.password;
+    }
+
+    if (req.file) {
+        userData.avatar = image.getFilePath(req.file);
+    } else {
+        delete userData.avatar;
+    }
+
+    try {
+        const userUpdated = await User.findByIdAndUpdate(id, userData);
+
+        if (!userUpdated) {
+            image.removeFile(req.file);
+            return res.status(404).send({ msg: "Usuario no encontrado" });
+        }
+
+        if (req.file && userUpdated.avatar) {
+            image.removeStoredFile(userUpdated.avatar);
+        }
+
+        return res.status(200).send({ msg: "Usuario actualizado correctamente" });
+    } catch (error) {
+        image.removeFile(req.file);
+        if (error.code === 11000) {
+            return res.status(400).send({ msg: "El email ya está registrado" });
+        }
+        return res.status(400).send({ msg: "Error al actualizar el usuario" });
+    }
+}
+
 module.exports = {
     getMe,
     getAllUsers,
-    createUser
+    createUser,
+    updateUser
 }

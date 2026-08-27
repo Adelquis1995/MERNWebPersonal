@@ -16,7 +16,14 @@ function removeFile(file) {
     fs.promises.unlink(file.path).catch(() => { });
 }
 
+// Borra un archivo ya guardado a partir de su ruta relativa ("avatar/123.jpg")
+function removeStoredFile(relativePath) {
+    if (!relativePath) return;
+    fs.promises.unlink(path.join(UPLOADS_DIR, relativePath)).catch(() => { });
+}
+
 module.exports = {
     getFilePath,
     removeFile,
+    removeStoredFile
 };
