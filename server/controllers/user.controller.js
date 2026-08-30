@@ -100,9 +100,26 @@ async function updateUser(req, res) {
     }
 }
 
+async function deleteUser(req, res) {
+    try {
+        const { id } = req.params
+        const deletedUser = await User.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).send({ msg: "Usuario no encontrado" })
+        } else {
+            image.removeStoredFile(deletedUser.avatar);
+            return res.status(200).send({ msg: "Usuario eliminado correctamente" })
+        }
+    } catch (error) {
+        return res.status(400).send({ msg: "Error al eliminar el usuario" })
+    }
+
+}
+
 module.exports = {
     getMe,
     getAllUsers,
     createUser,
-    updateUser
+    updateUser,
+    deleteUser
 }
