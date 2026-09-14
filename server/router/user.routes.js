@@ -1,7 +1,9 @@
 const express = require('express');
 const userController = require('../controllers/user.controller');
 const md_auth = require('../middlewares/authenticated');
-const md_upload_avatar = require('../middlewares/upload');
+const createUploader = require('../middlewares/upload');
+
+const md_upload_avatar = createUploader({ field: 'avatar' });
 
 const api = express.Router();
 
