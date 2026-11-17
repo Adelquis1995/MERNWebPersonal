@@ -8,9 +8,7 @@ const userSchema = new mongoose.Schema({
     role: String,
     active: Boolean,
     avatar: String,
-    createdAt: { type: Date, default: Date.now },
-}
-);
+}, { timestamps: true });
 
 
 module.exports = mongoose.model('User', userSchema);
