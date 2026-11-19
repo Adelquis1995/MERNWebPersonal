@@ -33,6 +33,25 @@ async function createPost(req, res) {
         return res.status(400).send({ msg: "Error al crear el post" });
     }
 }
+
+const getPosts = async (req, res) => {
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
+
+    const options = {
+        page,
+        limit,
+        sort: { createdAt: -1 },
+    };
+
+    try {
+        const posts = await Post.paginate({}, options);
+        return res.status(200).send(posts);
+    } catch (error) {
+        return res.status(500).send({ msg: "Error al obtener los posts" });
+    }
+};
 module.exports = {
     createPost,
+    getPosts,
 }
