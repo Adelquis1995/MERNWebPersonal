@@ -13,6 +13,7 @@ const api = express.Router();
 
 api.post("/post", [md_auth, md_upload_blog], postController.createPost);
 api.get("/post", postController.getPosts);
+api.patch("/post/:id", [md_auth, md_upload_blog], postController.updatePost);
 
 
 module.exports = api;
